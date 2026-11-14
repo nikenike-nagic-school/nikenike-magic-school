@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>Supabase 连通测试</title>
+  <style>
+    body { background:#111827; color:#e5e7eb; padding:40px 20px; font-family:sans-serif; }
+    .box { max-width:500px; margin:0 auto; padding:24px; background:#1f2937; border-radius:16px; text-align:center; }
+    button { background:#2563eb; color:white; padding:10px 16px; border:none; border-radius:8px; cursor:pointer; font-size:16px; }
+    #msg { margin-top:16px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>魔法通道测试</h2>
+    <br>
+    <button id="testBtn">测试魔法通道</button>
+    <div id="msg"></div>
+  </div>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://ghgqjeiajnsnedmvtazw.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_tAsFkD09uLteBgLzJ_3_8A_gZEXr5hI";
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    document.getElementById("testBtn").onclick = async () => {
+      const el = document.getElementById("msg");
+      try {
+        const { data, error } = await supabase.from("all_users").select("nickname").limit(1);
+        if (error) {
+          el.innerText = "❌ 数据库报错：" + error.message;
+        } else {
+          el.innerText = "✅ Supabase 通道正常！读到数据啦";
+        }
+      } catch (err) {
+        el.innerText = "❌ 连不上：" + err.message;
+      }
+    };
+  </script>
+</body>
+</html>
