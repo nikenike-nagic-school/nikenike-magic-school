@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+ <html lang="zh-CN">
+ <head>
+   <meta charset="UTF-8">
+   <title>尼克尼克魔法学校 · 留言厅</title>
+   <style>
+     body {
+       background: #0b0b1a;
+       color: #ffdd77;
+       font-family: sans-serif;
+       padding: 20px;
+     }
+     .count-box {
+       position: fixed;
+       top: 16px;
+       left: 16px;
+       background: #1c1c30;
+       padding: 10px 14px;
+       border-radius: 12px;
+       border: 1px solid #ffdd77;
+     }
+     h1 {
+       text-align: center;
+       margin-top: 80px;
+     }
+     .input-area {
+       text-align: center;
+       margin: 20px 0;
+     }
+     textarea {
+       width: 400px;
+       height: 100px;
+       padding: 10px;
+       font-size: 16px;
+     }
+     button {
+       margin-top: 12px;
+       background: #222;
+       color: #ffdd77;
+       border: 1px solid #ffdd77;
+       border-radius: 10px;
+       padding: 12px 26px;
+       font-size: 16px;
+     }
+     .msg-item {
+       background: #1c1c30;
+       margin: 12px auto;
+       padding: 12px;
+       border-radius: 10px;
+       max-width: 500px;
+     }
+     .msg-name {
+       font-weight: bold;
+       color: #ffe899;
+     }
+   </style>
+ </head>
+ <body>
+   <div class="count-box">
+     🧙 登录人数：<span id="userCount">0</span>
+   </div>
+   <h1>✨ 魔法留言厅</h1>
+   <div class="input-area">
+     <textarea id="leaveMsg" placeholder="写下你的魔法留言……"></textarea>
+     <br>
+     <button onclick="submitMessage()">发送留言</button>
+   </div>
+   <div id="messageList"></div>
+   <script>
+     const userName = localStorage.getItem("userName");
+     if (!userName) {
+       alert("请先去登录！");
+       location.href = "login.html";
+     }
+     let loginTotal = Number(localStorage.getItem("loginTotal") || "0");
+     let hasCounted = localStorage.getItem("hasCounted");
+     if (!hasCounted) {
+       loginTotal += 1;
+       localStorage.setItem("loginTotal", loginTotal);
+       localStorage.setItem("hasCounted", "true");
+     }
+     document.getElementById("userCount").innerText = loginTotal;
+     function loadMessages() {
+       let raw = localStorage.getItem("msgList");
+       return raw ? JSON.parse(raw) : [];
+     }
+     function saveMessages(arr) {
+       localStorage.setItem("msgList", JSON.stringify(arr));
+     }
+     function render() {
+       const box = document.getElementById("messageList");
+       box.innerHTML = "";
+       const list = loadMessages();
+       list.forEach(item => {
+         const div = document.createElement("div");
+         div.className = "msg-item";
+         div.innerHTML = `<span class="msg-name">${item.nick}</span>：${item.text}`;
+         box.appendChild(div);
+       });
+     }
+     function submitMessage() {
+       const text = document.getElementById("leaveMsg").value.trim();
+       if (!text) return alert("留言不能为空！");
+       const list = loadMessages();
+       list.push({ nick: userName, text: text });
+       saveMessages(list);
+       document.getElementById("leaveMsg").value = "";
+       render();
+     }
+     render();
+   </script>
+ </body>
+ </html>
