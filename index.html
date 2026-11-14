@@ -1,39 +1,58 @@
 <!DOCTYPE html>
- <html lang="zh-CN">
- <head>
-   <meta charset="UTF-8">
-   <title>尼克尼克魔法学校</title>
-   <style>
-     body {
-       background: #0b0b1a;
-       color: #ffdd77;
-       font-family: "微软雅黑", sans-serif;
-       text-align: center;
-       padding-top: 80px;
-     }
-     h1 {
-       font-size: 36px;
-       margin: 0;
-     }
-     .en {
-       font-size: 16px;
-       color: #aaa;
-       margin-bottom: 40px;
-     }
-     button {
-       padding: 14px 30px;
-       font-size: 18px;
-       background: #222;
-       color: #ffdd77;
-       border: 1px solid #ffdd77;
-       border-radius: 12px;
-       cursor: pointer;
-     }
-   </style>
- </head>
- <body>
-   <h1>尼克尼克魔法学校</h1>
-   <div class="en">Nikenike School of Witchcraft and Wizardry</div>
-   <button onclick="location.href='login.html'">进入魔法之门</button>
- </body>
- </html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>尼克尼克魔法学校</title>
+  <style>
+    body { background:#111827; color:#e5e7eb; font-family:sans-serif; }
+    .box { max-width:600px; margin:40px auto; padding:24px; background:#1f2937; border-radius:16px; }
+    h1 { color:#fbbf24; text-align:center; }
+    input { width:100%; padding:10px; margin:8px 0; box-sizing:border-box; }
+    button { background:#2563eb; color:white; padding:10px 16px; border:none; border-radius:8px; cursor:pointer; }
+    .list { margin-top:16px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>尼克尼克魔法学校 🪄</h1>
+    <div id="login-area">
+      <input id="nick" placeholder="输入你的魔法昵称">
+      <br>
+      <button id="loginBtn">进入魔法学院</button>
+    </div>
+    <div id="info-area" style="display:none">
+      <p>欢迎，<span id="myName"></span>！</p >
+      <h3>学院成员：</h3>
+      <div id="userList" class="list"></div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    // ↓这里换成你的
+    const SUPABASE_URL = "https://ghgqjeiajnsnedmvtazw.supabase.co/rest/v1/";
+    const SUPABASE_KEY = "sb_publishable_tAsFkD09uLteBgLzJ_3_8A_gZEXr5hI";
+
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    document.getElementById("loginBtn").onclick = async () => {
+      const nick = document.getElementById("nick").value.trim();
+      if (!nick) return alert("请填昵称！");
+
+      await supabase.from("all_users").upsert({ nickname: nick });
+
+      document.getElementById("login-area").style.display = "none";
+      document.getElementById("info-area").style.display = "block";
+      document.getElementById("myName").innerText = nick;
+
+      loadUsers();
+    };
+
+    async function loadUsers() {
+      const { data } = await supabase.from("all_users").select("nickname");
+      const html = data.map(u => `<div>✨ ${u.nickname}</div>`).join("");
+      document.getElementById("userList").innerHTML = html;
+    }
+  </script>
+</body>
+</html>
