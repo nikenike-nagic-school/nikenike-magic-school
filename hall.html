@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>魔法学院大厅</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background:#111827; color:#e5e7eb; font-family:sans-serif; padding: 40px 20px; }
+    .box { max-width: 600px; margin: 0 auto; padding: 28px; background:#1f2937; border-radius:18px; }
+    h1 { color:#fbbf24; text-align:center; margin-bottom: 20px; }
+    h3 { margin: 16px 0; }
+    .member-item { padding: 6px 0; }
+    .nav { text-align:center; margin-top:20px; }
+    .nav a { color:#93c5fd; text-decoration:none; margin: 0 8px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>魔法学院大厅 ✨</h1>
+    <p id="welcome"></p >
+    <h3>学院成员名单</h3>
+    <div id="userList"></div>
+    <div class="nav">
+      返回登录
+      关于学校
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://ghgqjeiajnsnedmvtazw.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_tAsFkD09uLteBgLzJ_3_8A_gZEXr5hI";
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const myNick = localStorage.getItem("myNick");
+    if (myNick) {
+      document.getElementById("welcome").innerText = "欢迎回来，" + myNick + "！";
+    } else {
+      document.getElementById("welcome").innerText = "游客，请先登录！";
+    }
+
+    async function loadUsers() {
+      const { data, error } = await supabase.from("all_users").select("nickname");
+      if (error) {
+        alert("读取名单失败：" + error.message);
+        return;
+      }
+      const html = data.map(u => `<div class="member-item">✨ ${u.nickname}</div>`).join("");
+      document.getElementById("userList").innerHTML = html;
+    }
+    loadUsers();
+  </script>
+</body>
+</html>
