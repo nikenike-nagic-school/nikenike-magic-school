@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>尼克尼克魔法学校｜登录</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background:#111827; color:#e5e7eb; font-family:sans-serif; padding: 40px 20px; }
+    .box { max-width: 600px; margin: 0 auto; padding: 28px; background:#1f2937; border-radius:18px; }
+    h1 { color:#fbbf24; text-align:center; margin-bottom: 24px; }
+    input { width:100%; padding:11px; margin:10px 0; border-radius:8px; border:none; font-size:16px; }
+    button { background:#2563eb; color:white; padding:11px 18px; border:none; border-radius:8px; cursor:pointer; font-size:16px; }
+    button:hover { background:#1d4ed8; }
+    .nav { text-align:center; margin-top:16px; }
+    .nav a { color:#93c5fd; text-decoration:none; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>尼克尼克魔法学校 🪄</h1>
+    <input id="nick" placeholder="输入你的魔法昵称">
+    <br>
+    <button id="loginBtn">进入魔法学院</button>
+    <div class="nav">
+      <br>
+      了解魔法学校
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://ghgqjeiajnsnedmvtazw.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_tAsFkD09uLteBgLzJ_3_8A_gZEXr5hI";
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    document.getElementById("loginBtn").onclick = async () => {
+      const nick = document.getElementById("nick").value.trim();
+      if (!nick) return alert("请填写魔法昵称！");
+      try {
+        await supabase.from("all_users").upsert({ nickname: nick });
+        // 把昵称存到浏览器，带到大厅页面
+        localStorage.setItem("myNick", nick);
+        location.href = "hall.html";
+      } catch (err) {
+        alert("魔法通道出错：" + err.message);
+      }
+    };
+  </script>
+</body>
+</html>
