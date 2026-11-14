@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Supabase 连通测试</title>
   <style>
     body { background:#111827; color:#e5e7eb; padding:40px 20px; font-family:sans-serif; }
@@ -22,12 +23,12 @@
   <script>
     const SUPABASE_URL = "https://ghgqjeiajnsnedmvtazw.supabase.co";
     const SUPABASE_KEY = "sb_publishable_tAsFkD09uLteBgLzJ_3_8A_gZEXr5hI";
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     document.getElementById("testBtn").onclick = async () => {
       const el = document.getElementById("msg");
       try {
-        const { data, error } = await supabase.from("all_users").select("nickname").limit(1);
+        const { data, error } = await sbClient.from("all_users").select("nickname").limit(1);
         if (error) {
           el.innerText = "❌ 数据库报错：" + error.message;
         } else {
